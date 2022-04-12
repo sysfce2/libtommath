@@ -23,11 +23,14 @@ mp_err s_mp_mul_comba(const mp_int *a, const mp_int *b, mp_int *c, int digs)
 {
    int      oldused, pa, ix;
    mp_err   err;
-   mp_digit W[MP_WARRAY];
+   mp_digit MP_ALLOC_WARRAY(W);
    mp_word  _W;
+
+   MP_CHECK_WARRAY(W);
 
    /* grow the destination as required */
    if ((err = mp_grow(c, digs)) != MP_OKAY) {
+      MP_FREE_WARRAY(W);
       return err;
    }
 
@@ -73,6 +76,7 @@ mp_err s_mp_mul_comba(const mp_int *a, const mp_int *b, mp_int *c, int digs)
    s_mp_zero_digs(c->dp + c->used, oldused - c->used);
 
    mp_clamp(c);
+   MP_FREE_WARRAY(W);
    return MP_OKAY;
 }
 #endif
