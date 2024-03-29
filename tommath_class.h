@@ -132,11 +132,9 @@
 #   define MP_UBIN_SIZE_C
 #   define MP_UNPACK_C
 #   define MP_WARRAY_FREE_C
-#   define MP_WARRAY_INIT_C
 #   define MP_XOR_C
 #   define MP_ZERO_C
 #   define S_MP_ADD_C
-#   define S_MP_CMPEXCH_N_C
 #   define S_MP_COPY_DIGS_C
 #   define S_MP_DIV_3_C
 #   define S_MP_DIV_RECURSIVE_C
@@ -169,7 +167,6 @@
 #   define S_MP_SQR_TOOM_C
 #   define S_MP_SUB_C
 #   define S_MP_WARRAY_C
-#   define S_MP_WARRAY_FREE_C
 #   define S_MP_WARRAY_GET_C
 #   define S_MP_WARRAY_PUT_C
 #   define S_MP_ZERO_BUF_C
@@ -965,11 +962,7 @@
 #endif
 
 #if defined(MP_WARRAY_FREE_C)
-#   define S_MP_WARRAY_FREE_C
-#endif
-
-#if defined(MP_WARRAY_INIT_C)
-#   define S_MP_WARRAY_FREE_C
+#   define S_MP_ZERO_BUF_C
 #endif
 
 #if defined(MP_XOR_C)
@@ -985,9 +978,6 @@
 #   define MP_CLAMP_C
 #   define MP_GROW_C
 #   define S_MP_ZERO_DIGS_C
-#endif
-
-#if defined(S_MP_CMPEXCH_N_C)
 #endif
 
 #if defined(S_MP_COPY_DIGS_C)
@@ -1308,12 +1298,7 @@
 #if defined(S_MP_WARRAY_C)
 #endif
 
-#if defined(S_MP_WARRAY_FREE_C)
-#endif
-
 #if defined(S_MP_WARRAY_GET_C)
-#   define MP_WARRAY_INIT_C
-#   define S_MP_CMPEXCH_N_C
 #endif
 
 #if defined(S_MP_WARRAY_PUT_C)
