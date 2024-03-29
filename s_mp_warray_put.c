@@ -5,14 +5,10 @@
 
 void s_mp_warray_put(void *w)
 {
-   size_t n, allocated = s_mp_warray.allocated;
-   for (n = 0; n < allocated; ++n) {
-      if (s_mp_warray.l_used[n].warray == w) {
-         s_mp_warray.l_used[n].warray = NULL;
-         s_mp_warray.l_free[n].warray = w;
-         break;
-      }
-   }
+   if (s_mp_warray.w_free || s_mp_warray.w_used != w)
+      return;
+   s_mp_warray.w_free = w;
+   s_mp_warray.w_used = NULL;
 }
 
 #endif

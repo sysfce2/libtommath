@@ -234,8 +234,6 @@ MP_PRIVATE mp_err s_mp_radix_size_overestimate(const mp_int *a, const int radix,
 MP_PRIVATE mp_err s_mp_fp_log(const mp_int *a, mp_int *c) MP_WUR;
 MP_PRIVATE mp_err s_mp_fp_log_d(const mp_int *a, mp_word *c) MP_WUR;
 
-MP_PRIVATE bool s_mp_cmpexch_n(void **ptr, void **expected, void *desired);
-
 #ifdef MP_SMALL_STACK_SIZE
 #define MP_SMALL_STACK_SIZE_C
 #define MP_ALLOC_WARRAY(name) *name = s_mp_warray_get()
@@ -247,19 +245,20 @@ MP_PRIVATE bool s_mp_cmpexch_n(void **ptr, void **expected, void *desired);
 #define MP_CHECK_WARRAY(name)
 #endif
 
-struct warray {
-   void *warray;
-};
+#if defined(_MSC_VER)
+#define mp_thread __declspec(thread)
+#elif defined(__GNUC__)
+#define mp_thread __thread
+#endif
+
 typedef struct {
-   struct warray *l_free, *l_used;
-   size_t allocated, usable;
+   void *w_free, *w_used;
 } st_warray;
 
-extern MP_PRIVATE st_warray s_mp_warray;
+extern MP_PRIVATE mp_thread st_warray s_mp_warray;
 
 MP_PRIVATE void *s_mp_warray_get(void);
 MP_PRIVATE void s_mp_warray_put(void *w);
-MP_PRIVATE void s_mp_warray_free(size_t n);
 
 #define MP_RADIX_MAP_REVERSE_SIZE 80u
 extern MP_PRIVATE const char s_mp_radix_map[];

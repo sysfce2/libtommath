@@ -3,6 +3,6 @@
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
 
-st_warray s_mp_warray;
+mp_thread st_warray s_mp_warray = { 0 };
 
 #endif

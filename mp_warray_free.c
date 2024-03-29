@@ -9,19 +9,13 @@ MP_STATIC_ASSERT(warray_free_sz_does_not_overflow, (sizeof(mp_word) * MP_WARRAY)
 static int s_warray_free(void)
 {
    int ret = 0;
-   size_t n;
-   for (n = 0; n < s_mp_warray.allocated; ++n) {
-      if (s_mp_warray.l_used[n].warray) {
-         ret = -2;
-         goto ERR_OUT;
-      }
+   if (s_mp_warray.w_used)
+      return -2;
+   if (s_mp_warray.w_free) {
+      s_mp_zero_buf(s_mp_warray.w_free, sizeof(mp_word) * MP_WARRAY);
+      MP_FREE(s_mp_warray.w_free, sizeof(mp_word) * MP_WARRAY);
+      s_mp_warray.w_free = NULL;
    }
-   for (n = 0; n < s_mp_warray.allocated; ++n) {
-      MP_FREE(s_mp_warray.l_free[n].warray, sizeof(mp_word) * MP_WARRAY);
-      s_mp_warray.l_free[n].warray = NULL;
-   }
-   s_mp_warray_free(s_mp_warray.usable);
-ERR_OUT:
    return ret;
 }
 

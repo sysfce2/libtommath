@@ -2502,20 +2502,24 @@ struct thread_info {
    int ret;
 };
 
+static void run(struct thread_info *tinfo)
+{
+   tinfo->ret = tinfo->t->fn();
+
+   if (mp_warray_free() == -2)
+      tinfo->ret = EXIT_FAILURE;
+}
+
 static void *run_pthread(void *arg)
 {
-   struct thread_info *tinfo = arg;
-
-   tinfo->ret = tinfo->t->fn();
+   run(arg);
 
    return arg;
 }
 
 static unsigned long run_msvc(void *arg)
 {
-   struct thread_info *tinfo = arg;
-
-   tinfo->ret = tinfo->t->fn();
+   run(arg);
 
    return 0;
 }
@@ -2609,7 +2613,6 @@ static int unit_tests(int argc, char **argv)
    };
    struct thread_info test_threads[sizeof(test)/sizeof(test[0])], *res;
    unsigned long i, ok, fail, nop;
-   size_t n_threads = MP_HAS(MULTI_THREADED) ? sizeof(test) / sizeof(test[0]) : 1;
    uint64_t t;
    int j;
    ok = fail = nop = 0;
@@ -2620,8 +2623,7 @@ static int unit_tests(int argc, char **argv)
    mp_rand_source(s_mp_rand_jenkins);
 
    if (MP_HAS(MP_SMALL_STACK_SIZE)) {
-      printf("Small-stack enabled with %zu warray buffers\n\n", n_threads);
-      DO(mp_warray_init(n_threads, 1));
+      printf("Small-stack enabled\n\n");
    }
 
    if (MP_HAS(MULTI_THREADED)) {
