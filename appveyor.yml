@@ -14,13 +14,7 @@ image:
 environment:
   matrix:
   - CFLAGS_VAR: ""
-    CFLAGS_VAR_DLL: "CFLAGS=\"/Ox /Oi /MD /DLTM_TEST_DYNAMIC\""
-
-  - CFLAGS_VAR: "CFLAGS=\"/Ox /Oi /DMP_SMALL_STACK_SIZE\""
-    CFLAGS_VAR_DLL: "CFLAGS=\"/Ox /Oi /MD /DLTM_TEST_DYNAMIC /DMP_SMALL_STACK_SIZE\""
-
-  - CFLAGS_VAR: "CFLAGS=\"/Ox /Oi /DMP_SMALL_STACK_SIZE /DLTM_TEST_MULTITHREAD\""
-    CFLAGS_VAR_DLL: "CFLAGS=\"/Ox /Oi /MD /DLTM_TEST_DYNAMIC /DMP_SMALL_STACK_SIZE /DLTM_TEST_MULTITHREAD\""
+    CFLAGS_VAR_DLL: "CFLAGS=\"/Ox /MD /DLTM_TEST_DYNAMIC\""
 build_script:
 - cmd: >-
     if "Visual Studio 2022"=="%APPVEYOR_BUILD_WORKER_IMAGE%" call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"

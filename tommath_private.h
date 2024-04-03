@@ -235,6 +235,23 @@ MP_PRIVATE mp_err s_mp_fp_log(const mp_int *a, mp_int *c) MP_WUR;
 MP_PRIVATE mp_err s_mp_fp_log_d(const mp_int *a, mp_word *c) MP_WUR;
 
 #ifdef MP_SMALL_STACK_SIZE
+
+#if defined(__GNUC__)
+/* We use TLS (Thread Local Storage) to manage the instance of the WARRAY
+ * per thread.
+ * The compilers we're usually looking at are GCC, Clang and MSVC.
+ * Both GCC and Clang are straight-forward with TLS, so it's enabled there.
+ * Using MSVC the tests were OK with the static library, but failed when
+ * the library was built as a DLL. As a result we completely disable
+ * support for MSVC.
+ * If your compiler can handle TLS properly without too much hocus pocus,
+ * feel free to open a PR to add support for it.
+ */
+#define mp_thread __thread
+#else
+#error "MP_SMALL_STACK_SIZE not supported with your compiler"
+#endif
+
 #define MP_SMALL_STACK_SIZE_C
 #define MP_ALLOC_WARRAY(name) *name = s_mp_warray_get()
 #define MP_FREE_WARRAY(name) s_mp_warray_put(name)
@@ -245,10 +262,8 @@ MP_PRIVATE mp_err s_mp_fp_log_d(const mp_int *a, mp_word *c) MP_WUR;
 #define MP_CHECK_WARRAY(name)
 #endif
 
-#if defined(_MSC_VER)
-#define mp_thread __declspec(thread)
-#elif defined(__GNUC__)
-#define mp_thread __thread
+#ifndef mp_thread
+#define mp_thread
 #endif
 
 typedef struct {
